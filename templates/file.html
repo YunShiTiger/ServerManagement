@@ -7,9 +7,9 @@
     <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="/static/plugins/layui/css/layui.css" media="all" />
     <link rel="stylesheet" href="/static/css/global.css" media="all">
-    <link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/font-awesome/4.6.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/font-awesome.min.css">
     <link rel="stylesheet" href="/static/css/table.css" />
-    <script src="http://cdn.staticfile.org/jquery/3.3.1/jquery.min.js"></script>
+    <script src="/static/js/jquery.min.js"></script>
 </head>
 
 <body>
@@ -32,7 +32,9 @@
                 <option value="copy">复制并粘贴</option>
                 <option value="zip">压缩至此</option>
             </select>
- 
+             <a href='javascript:void(0);' onclick='ChangePath()' class="layui-btn layui-btn-small">
+                <i class="layui-icon"></i> 跳转
+            </a>
             <a style="margin-left:30px">当前路径</a>
             <a id='fileRoute' style="margin-left:10px"></a>
         </blockquote>
@@ -81,7 +83,7 @@
     <script type="text/javascript" src="/static/js/base64.js"></script>
     <script type="text/javascript" src="/static/js/ffevent.js"></script>
     <script type="text/javascript">
-        var selectedList = new Array();
+        var selectedList = new Array(); //全局变量,储存当前已选中文件,其内元素为Base64编码的文件全路径
         $.ajax({
             type: "POST",
             dataType: "html",
@@ -189,7 +191,7 @@
                     },
                     success: function (data) {
                         if (jQuery.parseJSON(data).resultCode == '1') {
-                            alert(jQuery.parseJSON(data).result);
+                            layer.alert(jQuery.parseJSON(data).result,{title:false,skin: "layui-layer-molv",area: ["250px", "150px"],time: 10000,btn:["知道了"]});
                             return 0
                         };
                         path = Base64.decode(jQuery.parseJSON(data).result.path);
@@ -319,10 +321,23 @@
                             success: function (data) {
                                 resultCode = jQuery.parseJSON(data).resultCode;
                                 if (resultCode == '0') {
+                                b64filename = Base64.encode(oldFileName)
+                                index = selectedList.indexOf(b64filename)
+                                if (index != -1) {
+                                    selectedList.splice(index, 1);
+                                    $.ajax({
+                                        type: "POST",
+                                        dataType: "html",
+                                        url: '/secectList',
+                                        data: {
+                                            'type': 'out',
+                                            'value': b64filename
+                                        }
+                                    });}
                                     GetResult(nowPath);
                                     layer.msg('重命名成功')
                                 } else {
-                                    alert(jQuery.parseJSON(data).result);
+                                    layer.alert(jQuery.parseJSON(data).result,{title:false,skin: "layui-layer-molv",area: ["250px", "150px"],time: 10000,btn:["知道了"]});
                                     GetResult(nowPath)
                                 }
                             }
@@ -353,7 +368,7 @@
                                     GetResult(nowPath);
                                     layer.msg('修改成功')
                                 } else {
-                                    alert(jQuery.parseJSON(data).result);
+                                    layer.alert(jQuery.parseJSON(data).result,{title:false,skin: "layui-layer-molv",area: ["250px", "150px"],time: 10000,btn:["知道了"]});
                                     GetResult(nowPath)
                                 };
                                 layer.close(inputpromptpower);
@@ -390,7 +405,7 @@
                                     GetResult(nowPath);
                                     layer.msg('删除成功')
                                 } else {
-                                    alert(jQuery.parseJSON(data).result);
+                                    layer.alert(jQuery.parseJSON(data).result,{title:false,skin: "layui-layer-molv",area: ["250px", "150px"],time: 10000,btn:["知道了"]});
                                     GetResult(nowPath)
                                 }
                             }
@@ -421,11 +436,23 @@
                                     GetResult(nowPath);
                                     layer.msg('创建成功')
                                 } else {
-                                    alert(jQuery.parseJSON(data).result);
+                                    layer.alert(jQuery.parseJSON(data).result,{title:false,skin: "layui-layer-molv",area: ["250px", "150px"],time: 10000,btn:["知道了"]});
                                     GetResult(nowPath)
                                 }
                             }
                         });
+                        layer.close(inputprompt);
+                    }
+                );
+            };
+            ChangePath = function () {
+                inputprompt = layer.prompt({
+                        title: '请输入跳转目录',
+                        value:nowPath
+                    },
+                    function (value, index, elem) {
+                        var promptInputValue = value;
+                        GetResult(promptInputValue)
                         layer.close(inputprompt);
                     }
                 );
@@ -450,7 +477,7 @@
                                     GetResult(nowPath);
                                     layer.msg('创建成功');
                                 } else {
-                                    alert(jQuery.parseJSON(data).result);
+                                    layer.alert(jQuery.parseJSON(data).result,{title:false,skin: "layui-layer-molv",area: ["250px", "150px"],time: 10000,btn:["知道了"]});
                                     GetResult(nowPath)
                                 }
                             }
@@ -559,7 +586,7 @@
                                     selectedList = [];
                                     GetResult(nowPath);
                                 } else {
-                                    alert(jQuery.parseJSON(data).result);
+                                    layer.alert(jQuery.parseJSON(data).result,{title:false,skin: "layui-layer-molv",area: ["250px", "150px"],time: 10000,btn:["知道了"]});
                                     selectedList = [];
                                     GetResult(nowPath);
                                 };
@@ -623,7 +650,7 @@
                             GetResult(nowPath);
                             layer.msg('上传成功');
                         } else {
-                            alert(jQuery.parseJSON(data).result);
+                            layer.alert(jQuery.parseJSON(data).result,{title:false,skin: "layui-layer-molv",area: ["250px", "150px"],time: 10000,btn:["知道了"]});
                             GetResult(nowPath)
                         }
                     }
@@ -660,17 +687,8 @@
                         }
                     }
                 });
-
-
-
-
             }
         });
     </script>
 </body>
-
 </html>
-
-
-
-

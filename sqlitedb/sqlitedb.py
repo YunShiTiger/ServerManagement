@@ -11,7 +11,7 @@ class sqlClass(object):
     def __init__(self):
         self.createSystemInfo()
     def createSystemInfo(self):
-        logDB = 'log.db'
+        logDB = 'mange.db'
         sqlpath=(os.path.dirname(os.path.realpath(__file__)))
         if logDB in os.listdir(sqlpath):
             self.con = sqlite3.connect(os.path.join(sqlpath,logDB),check_same_thread = False)
@@ -43,7 +43,8 @@ class sqlClass(object):
                 TYPE            TEXT,
                 TIM             TEXT,
                 NOTE            TEXT,
-                SHELL           TEXT
+                SHELL           TEXT,
+                CATEGORY        TEXT
                 );''')
     def getTime(self):
         return time.strftime('%Y-%m-%d %H:%M:%S',time.localtime())
@@ -132,14 +133,15 @@ class sqlClass(object):
             TIM = self.getTime()
             NOTE = LinkButtonDict['NOTE']
             SHELL = LinkButtonDict['SHELL']
-            self.con.execute('INSERT INTO LinkButton (BTID,BUTTONNAME,TYPE,TIM,NOTE,SHELL) VALUES (?,?,?,?,?,?)',(BTID,BUTTONNAME,TYPE,TIM,NOTE,SHELL))
+            CATEGORY = LinkButtonDict['CATEGORY']
+            self.con.execute('INSERT INTO LinkButton (BTID,BUTTONNAME,TYPE,TIM,NOTE,SHELL,CATEGORY) VALUES (?,?,?,?,?,?,?)',(BTID,BUTTONNAME,TYPE,TIM,NOTE,SHELL,CATEGORY))
             self.con.commit()
             return [True]
         except Exception as e:
             return [False,e]
-    #查询全部按钮数据
-    def selectLinkButton(self):
-        return self.con.execute('SELECT * FROM LinkButton').fetchall()
+    #查询按钮数据
+    def selectLinkButton(self,CATEGORY):
+        return self.con.execute('SELECT * FROM LinkButton WHERE CATEGORY=?',(CATEGORY,)).fetchall()
     #按照BTID号查询shell
     def selectShellForLinkButton(self,BTID):
         return self.con.execute('SELECT SHELL FROM LinkButton WHERE BTID=?',(BTID,)).fetchall()

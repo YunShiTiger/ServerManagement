@@ -3,6 +3,7 @@ import threading
 import subprocess
 import time
 from index import sql
+import os
 import json
 class taskset():
     def __init__(self):
@@ -14,30 +15,73 @@ class taskset():
         else:
             print('从数据库恢复任务出错！')
         '''
+        {'type':'day',
+        'hour':'12',
+        'mint':'30',
+        'senc':'15',
+        'creatTime'：'2018-12-3 19:48',
+        'taskID':str(time.time()+random.random()),
+        'nextRunTime':time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()+int(interval))),
+        'value'："echo 666"
+        },
+
         {'type':'week',
-        'week':'7',
+        'week':'0', #周日为0
+        'hour':'12',
+        'mint':'30',
+        'senc':'15',
+        'creatTime'：'2018-12-3 19:48',
+        'taskID':str(time.time()+random.random()),
+        'nextRunTime':time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()+int(interval))),
+        'value'："echo 666"
+        },
+
+        {'type':'month',
+        'day':'7',
+        'hour':'12',
+        'mint':'30',
+        'senc':'15',
         'creatTime'：'2018-12-3 19:48',
         'taskID':str(time.time()+random.random()),
         'nextRunTime':time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()+int(interval))),
         'value'："echo 666"
         }
+
+
         '''
     def TaskFunc(self,data):
         if data not in self.taskList:
             return True
         self.taskList.remove(data)
-        subprocess.Popen(data['value'],shell=True)
         interval = self.GetNextTaskSenc(data)
+        nowTime = data['nextRunTime']
         data['nextRunTime'] = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()+int(interval)))
-        self.taskList.append(data)
         timer = threading.Timer(interval, self.TaskFunc,(data,))
         timer.start()
+        self.taskList.append(data)
+        logname = 'lib/tasklog/'+data['creatTime'].replace(':','_')+'.log'
+        with open(logname,'a') as f:
+            f.write('-'*20+'\n'+nowTime+':\n')
+        subprocess.Popen(data['value'],shell=True,stdout = open(logname,'a'),stderr = subprocess.STDOUT)
+
     def CreatTask(self,data,writeToSql=True):
         interval = self.GetNextTaskSenc(data)
         data['nextRunTime'] = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()+int(interval)))
         self.taskList.append(data)
         if writeToSql:
             sql.insertTask(data)
+        logname = 'lib/tasklog/'+data['creatTime'].replace(':','_')+'.log'
+        if not os.path.isfile(logname):
+            with open(logname,'w') as f:
+                if data['type'] == 'day':
+                    t = '每天的%s:%s:%s' %(data['hour'],data['mint'],data['senc'])
+                elif data['type'] == 'month':
+                    t = '每月%s号的%s:%s:%s' %(data['day'],data['hour'],data['mint'],data['senc'])
+                elif data['type'] == 'week':
+                    t = '每周%s的%s:%s:%s' %(data['week'],data['hour'],data['mint'],data['senc'])
+                elif data['type'] == 'senc':
+                    t = '每间隔%s秒' %data['senc']
+                f.write('计划任务执行日志\n任务创建时间:%s\n计划类型:%s\nSHELL内容:%s\n'%(data['creatTime'],t,data['value']))
         timer = threading.Timer(interval, self.TaskFunc,(data,))
         timer.start()
     def GetTaskList(self):
@@ -86,11 +130,8 @@ class taskset():
         next_day = next_time.date().day
         try:
             #根据下次运行的时间,计算出秒数
-            try:
-                next_time = datetime.datetime.strptime(f'{next_year}-{next_month}-{next_day} {data["hour"]}:{data["mint"]}:{data["senc"]}', "%Y-%m-%d %H:%M:%S")
-            except:
-                next_time = datetime.datetime.strptime('%s-%s-%s %s:%s:%s' %(next_year,next_month,next_day,data["hour"],data["mint"],data["senc"]), "%Y-%m-%d %H:%M:%S")
+            next_time = datetime.datetime.strptime('%s-%s-%s %s:%s:%s' %(next_year,next_month,next_day,data["hour"],data["mint"],data["senc"]), "%Y-%m-%d %H:%M:%S")
             timer_start_time = (next_time - now_time).total_seconds()
         except :
             raise ValueError('请检查时间格式!')
-        return (int(timer_start_time)+1 if (timer_start_time//1 > 0) else int(timer_start_time)) #向上取整,只有这一个需求,懒得用math.ceil
+        return (int(timer_start_time)+1 if (timer_start_time%1 > 0) else int(timer_start_time)) #向上取整,只有这一个需求,懒得用math.ceil

@@ -6,7 +6,7 @@
 		<link rel="icon" href="/static/img/favicon.ico" type="image/x-icon" />
 		<link rel="stylesheet" href="/static/plugins/layui/css/layui.css" media="all" />
 		<link rel="stylesheet" href="/static/css/global.css" media="all">
-		<link rel="stylesheet" type="text/css" href="http://www.jq22.com/jquery/font-awesome.4.6.0.css">
+		<link rel="stylesheet" type="text/css" href="/static/css/font-awesome.min.css">
 
 	</head>
 
@@ -54,45 +54,11 @@
 			</div>
     <script type="text/javascript" src="/static/js/ffevent.js"></script>
 			<script type="text/javascript" src="/static/plugins/layui/layui.js"></script>
+			<script src="/static/js/jquery.min.js"></script>
 			<script type="text/javascript">
-				var navs = [{
-		"title": "控制面板",
-		"href": "#",
-		"spread": false
-	},{
-		"title": "文件管理器",
-		"href": "/file",
-		"spread": false
-	},
-	{
-		"title": "进程监控",
-		"href": "/Process",
-		"spread": false
-	},
-	{
-		"title": "计划任务",
-		"href": "/Task",
-		"spread": false
-	},
-	{"title": "SHELL",
-	"spread": false,
-	"children": [
-		{"title": "web shell","href": "/ssh"},
-		{"title": "批量主机","href": "/BatchExec"}
-		]
-	},
-	{
-		"title": "快捷操作",
-		"spread": false,
-	"children": [
-		{"title": "快捷按钮","href": "/linkButton"},
-		//{"title": "本地执行","href": "/LocalShell"}
-		]
-	}
-
-];
-//{"title": "服务器管理","spread": false,"children": [{"title": "进程监控","href": "/Process"},{"title": "图表","href": "/GetPie"}]}
+			$.ajax({type:'POST',dataType:'html',url:'/',success:function(data) {navs = jQuery.parseJSON(data)}})
 			</script>
+
 			<script src="/static/js/index.js"></script>
 		</div>
 	</body>

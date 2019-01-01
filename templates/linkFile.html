@@ -4,26 +4,25 @@
       <div class="layui-card">
         <div class="layui-card-body">
           <blockquote class="layui-elem-quote">
-            在这里,你可以将你常用的shell命令变成一个按钮,
+            把你常用的文件放到这
             <br>
-            就像windows的快捷方式一样,当你需要的时候,只需要轻轻一点
-            <br>
-            就可以执行你预设好的shell命令
+            然后,一键直达~
           </blockquote>
           <fieldset class="layui-elem-field layui-field-title">
-            <legend><button class='layui-btn layui-btn-normal layui-btn-mini'  onclick="createButton()">新增按钮</button></legend>
+            <legend><button class='layui-btn layui-btn-normal layui-btn-mini'  onclick="createButton()">新增文件</button></legend>
           </fieldset>
           <table class="layui-table" lay-even="" lay-skin="row" style="margin-left: 45px">
           <colgroup>
           <col width="150">
           <col width="150">
           <col width="200">
+          <col width="300">
           <col>
           </colgroup>
           <thead>
           <tr>
             <th>
-              按钮
+              文件
             </th>
             <th>
               分类
@@ -32,11 +31,14 @@
               设定时间
             </th>
             <th>
+              文件位置
+            </th>
+            <th>
               备注
             </th>
           </tr>
           </thead>
-          <tbody id = 'linkButtonHtml'>
+          <tbody id = 'linkFileHtml'>
           </tbody>
           </table>
         </div>
@@ -47,16 +49,17 @@
 <script src="/static/js/jquery.min.js"></script>
 <link rel="stylesheet" href="/static/plugins/layui/css/layui.css" media="all"/>
 <script type="text/javascript" src="/static/plugins/layui/layui.js"></script>
+<script type="text/javascript" src="/static/js/base64.js"></script>
 <script type="text/javascript" src="/static/js/ffevent.js"></script>
 <script type="text/javascript">
-  var linkButtonList=[]
+  var linkFileList=[]
           layui.config({
             base: '/static/plugins/layui/modules/'
         });
           layui.use(['icheck', 'laypage', 'layer'], function () {
             createButton = function () {
               var strVar = "";
-                  strVar += "        <form class=\"layui-form\" method=\"post\" action=\"/linkButton/Create\" id=\"CreateLinkButtonForm\">\n";
+                  strVar += "        <form class=\"layui-form\" method=\"post\" action=\"/linkFile/Create\" id=\"CreateLinkFileForm\">\n";
                   strVar += "                <div class=\"layui-form-item layui-form-text\">\n";
                   strVar += "                    <label class=\"layui-form-label\">按钮名称<\/label>\n";
                   strVar += "                    <div class=\"layui-input-inline\">\n";
@@ -70,19 +73,19 @@
                   strVar += "                    <\/div>\n";
                   strVar += "                <\/div>\n";
                   strVar += "                <div class=\"layui-form-item layui-form-text\">\n";
+                  strVar += "                    <label class=\"layui-form-label\">文件路径<\/label>\n";
+                  strVar += "                    <div class=\"layui-input-block\">\n";
+                  strVar += "                        <textarea type=\"text\" name='SHELL' placeholder=\"文件路径\" class=\"layui-textarea\"><\/textarea>\n";
+                  strVar += "                    <\/div>\n";
+                  strVar += "                <\/div>\n";
+                  strVar += "                <div class=\"layui-form-item layui-form-text\">\n";
                   strVar += "                    <label class=\"layui-form-label\">备注<\/label>\n";
                   strVar += "                    <div class=\"layui-input-block\">\n";
                   strVar += "                        <textarea type=\"text\" name='NOTE' placeholder=\"请输入备注\" class=\"layui-textarea\"><\/textarea>\n";
                   strVar += "                    <\/div>\n";
                   strVar += "                <\/div>\n";
-                  strVar += "                <div class=\"layui-form-item layui-form-text\">\n";
-                  strVar += "                    <label class=\"layui-form-label\">shell内容<\/label>\n";
-                  strVar += "                    <div class=\"layui-input-block\">\n";
-                  strVar += "                        <textarea type=\"text\" name='SHELL' placeholder=\"请输入shell内容\" class=\"layui-textarea\"><\/textarea>\n";
-                  strVar += "                    <\/div>\n";
-                  strVar += "                <\/div>\n";
                   strVar += "        <\/form>\n";
-                  createLinkButton = window.layer.alert('创建按钮', {
+                  createLinkFile = window.layer.alert('创建按钮', {
                       title: '创建按钮',
                       skin: 'layui-layer-molv' //样式类名  自定义样式
                       ,
@@ -94,9 +97,9 @@
                       ,
                       content: strVar,
                       yes: function () {
-                      var form = new FormData(document.getElementById("CreateLinkButtonForm"));
+                      var form = new FormData(document.getElementById("CreateLinkFileForm"));
                       $.ajax({
-                          url:"/linkButton/Create",
+                          url:"/linkFile/Create",
                           type:"post",
                           data:form,
                           processData:false,
@@ -105,82 +108,67 @@
                             resultCode = jQuery.parseJSON(data).resultCode;
                                 if (resultCode == '0') {
                                     layer.msg('创建成功');
-                                    GetAllLinkButton()
+                                    GetAllLinkFile()
                                 } 
                                 else{layer.alert(jQuery.parseJSON(data).result,{title:false,skin: "layui-layer-molv",area: ["250px", "150px"],time: 10000,btn:["知道了"]})}
                           }
                       });
-                              window.layer.close(createLinkButton);
+                              window.layer.close(createLinkFile);
                           }, btn2: function () {
-                              window.layer.close(createLinkButton);
+                              window.layer.close(createLinkFile);
                           }
                   });
             };
-            GetAllLinkButton = function(){
+            GetAllLinkFile = function(){
               $.ajax({
-                  url:"/linkButton",
+                  url:"/linkFile",
                   type:"post",
                   success:function(data){
                     resultCode = jQuery.parseJSON(data).resultCode;
                         if (resultCode == '0') {
                             var ht = "";
-                            linkButtonList=jQuery.parseJSON(data).result.reverse()
-                            $.each(linkButtonList, function (i, item) {
+                            linkFileList=jQuery.parseJSON(data).result.reverse()
+                            $.each(linkFileList, function (i, item) {
                               ht+='<tr>'
-                              ht+='<td><button class="layui-btn layui-btn-small" id = '+ item[0] +' onclick="clickLinkButton()" style="width:100px">'+item[1]+'</button></td>'
+                              ht+='<td><button class="layui-btn layui-btn-small" id = '+ item[0] +' onclick="clickLinkFile()" style="width:100px">'+item[1]+'</button></td>'
                               ht+='<td>'+item[2]+'</td>'
                               ht+='<td>'+item[3]+'</td>'
+                              ht+='<td> <a style="color:#1AA094" href="javascript:void(0);" onclick=\'layer.alert("文件位于：<br>'+item[5]+'",{title:false,skin: "layui-layer-molv",area: ["250px", "150px"],time: 10000,btn:["知道了"]})\'>'+item[5]+'</a></td>'
                               ht+='<td>'+item[4]+'</td>'
                               ht+='</tr>'
                             })
-                            document.getElementById("linkButtonHtml").innerHTML = ht;
+                            document.getElementById("linkFileHtml").innerHTML = ht;
                         } 
                         else{layer.alert(jQuery.parseJSON(data).result,{title:false,skin: "layui-layer-molv",area: ["250px", "150px"],time: 10000,btn:["知道了"]})}
                   }
               });
             };
 
-            clickLinkButton = function(){
+            clickLinkFile = function(){
               BTID = event.srcElement.id;
-              SHELL = '';
-              $.each(linkButtonList, function (i, item) {
+              FileName = '';
+              $.each(linkFileList, function (i, item) {
                 if (item[0] == BTID){
-                  SHELL=item[5];
+                  FileName=item[5];
                   return false
                 }
               })
-              vLinkButton = window.layer.alert('确认执行?', {
-                                    title: '确认执行?',
-                                    skin: 'layui-layer-molv' //样式类名  自定义样式
-                                    ,
-                                    closeBtn: 1 // 是否显示关闭按钮
-                                    ,
-                                    anim: 0 //动画类型
-                                    ,
-                                    btn: ['执行', '删除','取消'] //按钮
-                                    ,
-                                    content: "<textarea type=\"text\" name='SHELL' id='confirmSHELL' placeholder=\"请确认你的shell内容\" class=\"layui-textarea\">" + SHELL + "<\/textarea>\n",
-                                    yes: function () {
-                                    $.ajax({
-                                        url:"/linkButton/Run",
-                                        type:"post",
-                                        data:{
-                                          'BTID':BTID,
-                                          'SHELL':document.getElementById("confirmSHELL").value
-                                        },
-                                        success:function(data){
-                                          resultCode = jQuery.parseJSON(data).resultCode;
-                                              if (resultCode == '0') {
-                                                  layer.msg('执行成功');
-                                                  GetAllLinkButton()
-                                              } 
-                                              else{layer.alert(jQuery.parseJSON(data).result,{title:false,skin: "layui-layer-molv",area: ["250px", "150px"],time: 10000,btn:["知道了"]})}
-                                        }
-                                    });
-                                            window.layer.close(vLinkButton);
-                                        }, btn2: function () {
+                FileeEdit = layer.open({
+                    type: 2,
+                    title: FileName,
+                    shadeClose: false,
+                    shade: 0.8,
+                    btn: ['保存', '删除该按钮','关闭'],
+                    area: ['60%', '500px'],
+                    content: '/codeEdit?filename=' + Base64.encode(FileName),
+                    yes: function (index) {
+                            var body = layer.getChildFrame('body', FileeEdit);
+                            body.find("#codeEidtFormPostSubmit").click();
+                            layer.msg('文件已提交');
+                        },
+                        btn2: function () {
                                             $.ajax({
-                                                url:"/linkButton/Delete",
+                                                url:"/linkFile/Delete",
                                                 type:"post",
                                                 data:{
                                                   'BTID':BTID
@@ -189,21 +177,22 @@
                                                   resultCode = jQuery.parseJSON(data).resultCode;
                                                       if (resultCode == '0') {
                                                           layer.msg('删除成功');
-                                                          GetAllLinkButton()
+                                                          GetAllLinkFile()
                                                       } 
                                                       else{layer.alert(jQuery.parseJSON(data).result,{title:false,skin: "layui-layer-molv",area: ["250px", "150px"],time: 10000,btn:["知道了"]})}
                                                 }
                                             });
-                                            window.layer.close(vLinkButton);
-                                        }, btn3: function () {
-                                            window.layer.close(vLinkButton);
-                                        }
-                                });
+                        },
+                        btn3: function () {
+                            layer.msg('文件关闭,未作出修改')
+                        }
+
+                });
             };
 
 
 
-GetAllLinkButton()
+GetAllLinkFile()
 
           })
 </script>

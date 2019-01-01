@@ -1,27 +1,6 @@
 # WebFileManager
-服务器管理工具，目前有文件管理器、进程监控、计划任务、webSSH、多主机管理等，准备在自己服务器上用，后续会加入更多运维相关，本项目后端python+flask，前端使用layui+jquery，代码在线编辑使用codemirror，webSSH后端使用paramiko前端xterm
-## 更新日志
-### 2018/12/23
-1.新增快捷按钮功能,可以在面板上为你常用的shell命令创建一个"快捷方式",然后一键调用,命令执行前可以对shell做出修改
-### 2018/12/3
-1.优化文件管理器跨文件夹操作,已选中文件可单独去除,选中文件的全路径记录在session中,可开多个页面分别操作<br>
-2.计划任务储存在数据库中,重启进程会自动加载(使用早期版本的同志们注意修改数据库哦)
-### 2018/12/2
-1.文件管理器批量操作时增加提示<br>
-2.加上了文件批量剪切和复制<br>
-3.压缩了后台传递进程信息的大小,消耗流量仅为原先的约1/6,且分段生成前端页面,前端内存占用大幅减少<br>
-4.新增了文件管理器的图片预览功能(预览时图片为预览图,原图请点击下载)<br>
-### 2018/11/3
-1.新增远程主机管理,多主机批量执行shell,支持设定以root身份执行shell(目前很简陋,后续会添加更多功能)<br>
-### 2018/10/28
-1.新增登陆验证,原本想存在数据库里的,写完了又觉得没必要,暂时放在config里了,等以后抽时间加个面板设置的功能吧<br>
-### 2018/10/26
-1.新增资源监控，可以记录指定时间内的资源使用情况<br>
-### 2018/10/24
-1.新增了一个很low的webssh<br>
-### 2018/10/22
-1.新增进程管理.<br>
-2.新增计划任务(使用datatime计算时间，threading.Timer定时执行).<br>
+服务器管理工具，目前有文件管理器、进程监控、计划任务、webSSH、多主机管理,本地桌面等，准备在自己服务器上用，后续会加入更多运维相关，本项目后端python+flask，前端使用layui+jquery，代码在线编辑使用codemirror，webSSH后端使用paramiko前端xterm
+## [Mozilla](readme/更新日志.md)更新日志
 ## 功能介绍
 ### 1.文件管理
 兼容windows和linxu的文件管理器,目前有文件的批量压缩、下载、重命名、文件内容在线编辑等. <br>
@@ -40,6 +19,8 @@
 本质上就是一个定时储存服务器资源使用情况的定时任务，前端请求到储存的数据后解析，最后用echarts生成折线图，为了尽量少的占用服务器资源，解析操作都是在网页前端进行的。<br>
 ### 6.便捷操作
 现在只有一个快捷按钮的功能,就是可以自行设定一个常用的shll,方便快速调用,执行前可以做出修改,未来会加入其他我的脑洞...<br>
+### 7.本地桌面
+此功能仅限windows可用,所以并不默认开启,若有需要可在route/__init__.py中修改
 ## 项目截图
 ### 文件管理部分截图
 ![其余界面](https://github.com/cksgf/WebFileManager/blob/master/readme/文件管理.png)
@@ -61,6 +42,8 @@
 ![其余界面](https://github.com/cksgf/WebFileManager/blob/master/readme/创建快捷按钮.png)
 ![其余界面](https://github.com/cksgf/WebFileManager/blob/master/readme/查看已创建的快捷方式.png)
 ![其余界面](https://github.com/cksgf/WebFileManager/blob/master/readme/执行前查看.png)
+### windows下本地桌面
+![其余界面](https://github.com/cksgf/WebFileManager/blob/master/readme/本地桌面.png)
 ## 使用说明
 ### 运行本项目需要自行pip安装`flask`,`chardet`,`datetime`, `paramiko`,`pillow`,`psutil` <br>
 ### 或在目录下 python3 -m pip -r install requirements.txt<br>
@@ -72,6 +55,7 @@
 5.`webssh.py`,处理webSSH，多主机批量执行shell，先凑合用着，以后改进，<br>
 6.`controlPanel.py`,处理资源监控的视图函数<br>
 7.`linkButton.py`,常用shell的快捷方式<br>
+8.`controlWin.py`,windows下本地桌面<br>
 ### lib目录下是一些功能的实现方法，<br>
 1.`extract.py`,处理解压文件，目前只有.zip，.gz，.tar，如果有需要，可以在这添加方法，<br>
 2.`task.py`,用于处理定时任务，这里我的实现方式是根据传入的定时类型和设定时间,计算出距离下一次符合时间的秒数，然后调用threading的Timer定时，定时函数执行时重新计算下一次时间，以此反复，<br>
@@ -83,9 +67,8 @@
 1.文件管理器应该从那个目录开始显示,一般为'/'就好。<br>
 2.资源监控默认开关/最大储存时间/前端默认显示时间/后台记录间隔。 <br>
 ### sqlitedb是数据库目录
-`sqlitedb.py`,里面目前只有资源记录，暂时没有加入其他功能<br>
+`sqlitedb.py`,处理数据库操作<br>
 ## 本项目后端给前端传值全部使用json,前端用jq处理、发送请求并生成最终页面<br>
 ## 其中的文件管理器部分前端给后端传值,大部分采用base64编码 <br>
 ## 使用前切记修改config/config<br>
-## 如果您觉得我这个小项目对您有所帮助，欢迎捐助~
-![其余界面](https://github.com/cksgf/WebFileManager/blob/master/readme/zhifubao.jpg)
+

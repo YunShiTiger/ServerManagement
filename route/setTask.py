@@ -1,11 +1,15 @@
 from flask import request,render_template,redirect,send_file, send_from_directory,url_for,session,make_response
 import time
-from index import app
+from index import app,url
 import json
 import os
 import time,random
 from lib.task import taskset
 from .login import cklogin
+url.append( {
+        "title": "计划任务",
+        "href": "/Task",
+    })
 task = taskset()
 
 @app.route('/Task',methods=['GET','POST'])
@@ -19,7 +23,7 @@ def CreatTask():
     data=request.values.to_dict()
     if data['type'] == 'week':
         if data['week'] == '7':
-            data['week'] = 0
+            data['week'] = '0'
     data['creatTime'] = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime())
     data['taskID'] = str(time.time()+random.random())
     try:

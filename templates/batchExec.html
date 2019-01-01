@@ -6,9 +6,9 @@
     <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="/static/plugins/layui/css/layui.css" media="all" />
     <link rel="stylesheet" href="/static/css/global.css" media="all">
-    <link rel="stylesheet" type="text/css" href="http://www.jq22.com/jquery/font-awesome.4.6.0.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/font-awesome.min.css">
     <link rel="stylesheet" href="/static/css/table.css" />
-    <script src="http://cdn.staticfile.org/jquery/3.3.1/jquery.min.js"></script>
+    <script src="/static/js/jquery.min.js"></script>
 </head>
 
 <body>
@@ -159,7 +159,7 @@ var strVar = "";
                     url: '/SelectBatchExec',
                     success: function (data) {
                         if (jQuery.parseJSON(data).resultCode == '1') {
-                            alert(jQuery.parseJSON(data).result);
+                            layer.alert(jQuery.parseJSON(data).result,{title:false,skin: "layui-layer-molv",area: ["250px", "150px"],time: 10000,btn:["知道了"]});
                             return 0
                         };
                         result = jQuery.parseJSON(data).result;
@@ -211,7 +211,7 @@ var strVar = "";
                                 if (resultCode == '0') {
                                     layer.msg('创建成功')
                                 } else {
-                                    alert(jQuery.parseJSON(data).result);
+                                    layer.alert(jQuery.parseJSON(data).result,{title:false,skin: "layui-layer-molv",area: ["250px", "150px"],time: 10000,btn:["知道了"]});
                                 };
                                 GetRResult();
                                 layer.close(CreateRemoteOpen);
@@ -261,7 +261,7 @@ var strVar = "";
                                     GetRResult();
                                     layer.msg('执行成功')
                                 } else {
-                                    alert(jQuery.parseJSON(data).result);
+                                    layer.alert(jQuery.parseJSON(data).result,{title:false,skin: "layui-layer-molv",area: ["250px", "150px"],time: 10000,btn:["知道了"]});
                                     GetRResult()
                                 }
                             }
@@ -297,7 +297,7 @@ var strVar = "";
                                     GetRResult();
                                     layer.msg('删除成功')
                                 } else {
-                                    alert(jQuery.parseJSON(data).result);
+                                    layer.alert(jQuery.parseJSON(data).result,{title:false,skin: "layui-layer-molv",area: ["250px", "150px"],time: 10000,btn:["知道了"]});
                                     GetRResult()
                                 }
                             }

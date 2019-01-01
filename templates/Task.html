@@ -7,7 +7,7 @@
         <link rel="stylesheet" href="/static/css/table.css" />
             <link rel="stylesheet" href="/static/css/global.css" media="all">
     <link rel="stylesheet" href="/static/plugins/layui/css/layui.css" media="all" />
-    <link rel="stylesheet" type="text/css" href="http://www.jq22.com/jquery/font-awesome.4.6.0.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/font-awesome.min.css">
 </head>
 
 <body>
@@ -132,7 +132,7 @@
 
     <script type="text/javascript" src="/static/js/ffevent.js"></script>
         <script type="text/javascript" src="/static/plugins/layui/layui.js"></script>
-        <script src="http://cdn.staticfile.org/jquery/3.3.1/jquery.min.js"></script>
+        <script src="/static/js/jquery.min.js"></script>
         <script>
         function GetTaskList() {
             $.ajax({
@@ -177,7 +177,7 @@
 		                    layer.msg('删除成功');
 		                    GetTaskList();
 		                } 
-		                else{alert(jQuery.parseJSON(data).result)}
+		                else{layer.alert(jQuery.parseJSON(data).result,{title:false,skin: "layui-layer-molv",area: ["250px", "150px"],time: 10000,btn:["知道了"]})}
                 
                 }
             });
@@ -209,7 +209,7 @@
                                         layer.msg('删除成功');
                                         GetTaskList();
                                     } 
-                                    else{alert(jQuery.parseJSON(data).result)}
+                                    else{layer.alert(jQuery.parseJSON(data).result,{title:false,skin: "layui-layer-molv",area: ["250px", "150px"],time: 10000,btn:["知道了"]})}
                             
                             }
                         });
@@ -234,7 +234,7 @@
                                 document.getElementById("senc").click();
                                 GetTaskList();
                             } else {
-                                alert(jQuery.parseJSON(data).result);
+                                layer.alert(jQuery.parseJSON(data).result,{title:false,skin: "layui-layer-molv",area: ["250px", "150px"],time: 10000,btn:["知道了"]});
                             };
                         }
                     })
@@ -255,7 +255,7 @@
                                 document.getElementById("other").click();
                                 GetTaskList();
                             } else {
-                                alert(jQuery.parseJSON(data).result);
+                                layer.alert(jQuery.parseJSON(data).result,{title:false,skin: "layui-layer-molv",area: ["250px", "150px"],time: 10000,btn:["知道了"]});
                             };
                         }
                     })

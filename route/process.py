@@ -1,11 +1,15 @@
 import psutil
 from flask import request,render_template,redirect,send_file, send_from_directory,url_for,session,make_response
-from index import app
+from index import app,url
 import json
 import platform,os,datetime,sys
 from .login import cklogin
 import zipfile,time,os
 import random
+url.append( {
+        "title": "进程监控",
+        "href": "/Process",
+    })
 wink = ['SYSTEM', 'SYSTEMIDLEPROCESS', 'SMSS.EXE', 
 'CSRSS.EXE', 'WININIT.EXE', 'WINLOGON.EXE', 'SERVICES.EXE', 
 'LSASS.EXE', 'SVCHOST.EXE', 'DWM.EXE', 'MEMORYCOMPRESSION', 
@@ -72,7 +76,10 @@ def GetNetWorkList():
         except :
             continue
     for i in os.listdir('temp'):
-        os.remove(os.path.join('temp',i))
+        try:
+            os.remove(os.path.join('temp',i))
+        except:
+            continue
     t = os.path.join('temp', str(time.time()+random.random())+'.zip')
     f = zipfile.ZipFile(t,'w',zipfile.ZIP_DEFLATED)
     while networkList != []:

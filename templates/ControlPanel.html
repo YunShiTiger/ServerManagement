@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="/static/css/table.css" />
     <link rel="stylesheet" href="/static/css/global.css" media="all">
     <link rel="stylesheet" href="/static/plugins/layui/css/layui.css" media="all" />
-    <link rel="stylesheet" type="text/css" href="http://www.jq22.com/jquery/font-awesome.4.6.0.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/font-awesome.min.css">
 </head>
 
 <body style="background: #EFF8FB;">
@@ -60,8 +60,8 @@
     <div id="echartsLine3" style="width: 45%;height: 300px;float: left;margin-top: 20px;margin-left: 20px;"></div>
 </body>
     <script type="text/javascript" src="/static/js/ffevent.js"></script>
-<script src="http://cdn.staticfile.org/echarts/4.2.0-rc.1/echarts.js"></script>
-<script src="http://cdn.staticfile.org/jquery/3.3.1/jquery.min.js"></script>
+<script src="/static/js/echarts.js"></script>
+<script src="/static/js/jquery.min.js"></script>
 <script type="text/javascript" src="/static/plugins/layui/layui.js"></script>
 <script>
     layui.use(['form', 'layedit', 'laydate'], function () {
@@ -80,7 +80,7 @@
                 success: function (data) {
                     resultCode = jQuery.parseJSON(data).resultCode;
                     if (resultCode == '1') {
-                        alert(jQuery.parseJSON(data).result)
+                        layer.alert(jQuery.parseJSON(data).result,{title:false,skin: "layui-layer-molv",area: ["250px", "150px"],time: 10000,btn:["知道了"]})
                     };
                     location.reload();
 
@@ -100,7 +100,7 @@
                 success: function (data) {
                     resultCode = jQuery.parseJSON(data).resultCode;
                     if (resultCode == '1') {
-                        alert(jQuery.parseJSON(data).result)
+                        layer.alert(jQuery.parseJSON(data).result,{title:false,skin: "layui-layer-molv",area: ["250px", "150px"],time: 10000,btn:["知道了"]})
                     };
                     location.reload();
                 }
