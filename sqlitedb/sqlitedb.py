@@ -72,7 +72,6 @@ class sqlClass(object):
     #----------------------远程主机--------------------
     #新建主机
     def insertRemoteHost(self,IP,PORT,CTYPE,USERNAME,GROUPS,NOTE,ROOTPWD,PWD=None,PKPATH=None):
-        print(IP)
         try:
             self.con.execute("INSERT INTO RemoteHost (IP,PORT,CTYPE,USERNAME,PWD,PKPATH,GROUPS,NOTE,CARETETIME,ROOTPWD) VALUES (?,?,?,?,?,?,?,?,?,?)",(IP,PORT,CTYPE,USERNAME,PWD,PKPATH,GROUPS,NOTE,self.getTime(),ROOTPWD))
             self.con.commit()

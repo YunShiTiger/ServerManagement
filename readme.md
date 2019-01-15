@@ -1,6 +1,6 @@
-# WebFileManager
-服务器管理工具，目前有文件管理器、进程监控、计划任务、webSSH、多主机管理,本地桌面等，准备在自己服务器上用，后续会加入更多运维相关，本项目后端python+flask，前端使用layui+jquery，代码在线编辑使用codemirror，webSSH后端使用paramiko前端xterm
-## [Mozilla](readme/更新日志.md)更新日志
+# ServerManagement
+服务器管理工具，目前有文件管理器、进程监控、计划任务、webSSH、多主机管理、本地桌面、内网穿透等，后续会加入更多运维相关，本项目后端python+flask
+## [更新日志](readme/更新日志.md)
 ## 功能介绍
 ### 1.文件管理
 兼容windows和linxu的文件管理器,目前有文件的批量压缩、下载、重命名、文件内容在线编辑等. <br>
@@ -21,6 +21,8 @@
 现在只有一个快捷按钮的功能,就是可以自行设定一个常用的shll,方便快速调用,执行前可以做出修改,未来会加入其他我的脑洞...<br>
 ### 7.本地桌面
 此功能仅限windows可用,所以并不默认开启,若有需要可在route/__init__.py中修改
+### 8.内网穿透
+选用功能,将项目下server.zip解压并在有外网IP的服务器上运行,在本地服务器管理工具运行时修改配置（外网服务器需要开启80端口，10000-20000端口，其中80端口为综合管理平台，可以查看所有的连接设备，可以查看其绑定的外网IP+端口，10000-20000端口为内网穿透的绑定端口）,即可实现内网穿透,在有外网IP的服务端上一键查看所有连接设备,后续会加入查看所有服务器实时状态等功能
 ## 项目截图
 ### 文件管理部分截图
 ![其余界面](https://github.com/cksgf/WebFileManager/blob/master/readme/文件管理.png)
@@ -44,6 +46,8 @@
 ![其余界面](https://github.com/cksgf/WebFileManager/blob/master/readme/执行前查看.png)
 ### windows下本地桌面
 ![其余界面](https://github.com/cksgf/WebFileManager/blob/master/readme/本地桌面.png)
+### 内网穿透+综合管理平台
+![其余界面](https://github.com/cksgf/WebFileManager/blob/master/readme/内网穿透.png)
 ## 使用说明
 ### 运行本项目需要自行pip安装`flask`,`chardet`,`datetime`, `paramiko`,`pillow`,`psutil` <br>
 ### 或在目录下 python3 -m pip -r install requirements.txt<br>
@@ -61,7 +65,7 @@
 2.`task.py`,用于处理定时任务，这里我的实现方式是根据传入的定时类型和设定时间,计算出距离下一次符合时间的秒数，然后调用threading的Timer定时，定时函数执行时重新计算下一次时间，以此反复，<br>
 3.`vieCode.py`,生成验证码,这份不是我自己写的,是从宝塔面板的代码里面抄来的= =,准备在写登录时用,目前暂时没用到<br>
 4.`writeRes.py`,定时进行资源监控，并修改部分设置<br>
-
+5.`common_func.py`,`slaver.py`为实现内网穿透功能的文件<br>
 ### config目录用于配制程序
 `config.py`,里面定义了以下内容：<br>
 1.文件管理器应该从那个目录开始显示,一般为'/'就好。<br>

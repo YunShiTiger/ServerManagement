@@ -52,6 +52,7 @@
                             <option value="day">每天</option>
                             <option value="week">每周</option>
                             <option value="month">每月</option>
+                            <option value="once">仅一次</option>
                         </select>
                     </div>
                 </div>
@@ -149,7 +150,8 @@
                    var te='';
                    if (item.type == 'day'){t='每日任务';te='每日 '+item.hour+':'+item.mint+':'+item.senc}
                    	else if (item.type == 'week'){t='每周任务';te='每周'+item.week+' '+item.hour+':'+item.mint+':'+item.senc}
-                   	else if (item.type == 'month'){t='每月任务';te='每月'+item.day+'号 '+item.hour+':'+item.mint+':'+item.senc}
+                   	else if (item.type == 'month'){t='每月任务';te='每月'+item.day+'日 '+item.hour+':'+item.mint+':'+item.senc}
+                   	else if (item.type == 'once'){t='仅一次';te=item.year+'年'+item.month+'月'+ item.day+'日 '+item.hour+':'+item.mint+':'+item.senc}
                    	else {t = '时间循环';te='每'+item.senc+'秒'};
                    hem += "<td>"+t+"</td>";
                    hem += "<td>"+te+"</td>";
@@ -284,6 +286,28 @@
                         strVar += "							<input type=\"number\" name=\"day\" lay-verify=\"number\" placeholder=\"每月的3号,则输入3\" autocomplete=\"off\" class=\"layui-input\" max=\"31\">\n";
                         strVar += "						<\/div>\n";
                         strVar += "					<\/div>\n";
+                        document.getElementById("taskType").innerHTML = strVar;
+                    } else if (data.value == 'once') {
+
+                        var strVar = "";
+                        strVar += "                 <div class=\"layui-form-item layui-form-text\">\n";
+                        strVar += "                     <label class=\"layui-form-label\">年<\/label>\n";
+                        strVar += "                     <div class=\"layui-input-inline\">\n";
+                        strVar += "                         <input type=\"number\" name=\"year\" lay-verify=\"number\" placeholder=\"哪年\" autocomplete=\"off\" class=\"layui-input\" max=\"31\">\n";
+                        strVar += "                     <\/div>\n";
+                        strVar += "                 <\/div>\n";
+                        strVar += "                 <div class=\"layui-form-item layui-form-text\">\n";
+                        strVar += "                     <label class=\"layui-form-label\">月<\/label>\n";
+                        strVar += "                     <div class=\"layui-input-inline\">\n";
+                        strVar += "                         <input type=\"number\" name=\"month\" lay-verify=\"number\" placeholder=\"哪个月\" autocomplete=\"off\" class=\"layui-input\" max=\"31\">\n";
+                        strVar += "                     <\/div>\n";
+                        strVar += "                 <\/div>\n";
+                        strVar += "                 <div class=\"layui-form-item layui-form-text\">\n";
+                        strVar += "                     <label class=\"layui-form-label\">日<\/label>\n";
+                        strVar += "                     <div class=\"layui-input-inline\">\n";
+                        strVar += "                         <input type=\"number\" name=\"day\" lay-verify=\"number\" placeholder=\"哪天\" autocomplete=\"off\" class=\"layui-input\" max=\"31\">\n";
+                        strVar += "                     <\/div>\n";
+                        strVar += "                 <\/div>\n";
                         document.getElementById("taskType").innerHTML = strVar;
                     } else {
                         document.getElementById("taskType").innerHTML = '';

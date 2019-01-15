@@ -66,10 +66,13 @@ def GetPie():
         h, m = divmod(m, 60)     #分钟计算出小时
         systim = "%02d小时%02d分钟" % (h, m)
         sysinfo = [
-        '系统信息：' + platform.platform() + '-' + platform.architecture()[0],
-        platform.uname().processor,
-        '已开机运行了'+systim
+        '系统信息：' + platform.platform() + '-' + platform.architecture()[0]
         ]
+        try:
+            sysinfo.append(platform.uname().processor)
+        except:
+            pass
+        sysinfo.append('已开机运行了'+systim)
     except Exception as e:
         return json.dumps({'resultCode':1,'result':str(e)})
     else:

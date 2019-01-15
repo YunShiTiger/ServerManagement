@@ -302,7 +302,6 @@ def secectList():
         session['secectList'] = '[]'
     elif types == 'get':
         return json.dumps({'resultCode':0,'result':session['secectList']})
-    print(session['secectList'])
     return json.dumps({'resultCode':0,'result':'success'})
 
 

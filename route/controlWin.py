@@ -15,7 +15,10 @@ def controlWindows():
 def getScreen():
     while True:
         time.sleep(0.08)
-        img = ImageGrab.grab()
+        try:
+            img = ImageGrab.grab()
+        except :
+            return (b'--frame\r\nContent-Type: image/jpeg\r\n\r\n  \r\n')
         img = img.resize((int(img.size[0]/RATE),int(img.size[1]/RATE)), Image.ANTIALIAS)
         img.save('temp/1.jpg')
         with open('temp/1.jpg','rb') as c:

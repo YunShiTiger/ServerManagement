@@ -8,12 +8,13 @@ import json
 class taskset():
     def __init__(self):
         self.taskList=[]
+        self.maxSetTime = 2678400
         lastTask = sql.selectTask()
         if lastTask[0]:
             for i in lastTask[1]:
                 self.CreatTask(json.loads(i[0]),writeToSql = False)
         else:
-            print('从数据库恢复任务出错！')
+            pass
         '''
         {'type':'day',
         'hour':'12',
@@ -47,18 +48,42 @@ class taskset():
         'value'："echo 666"
         }
 
-
         '''
-    def TaskFunc(self,data):
+    def TaskFunc(self,data,delete = False):
         if data not in self.taskList:
             return True
-        self.taskList.remove(data)
-        interval = self.GetNextTaskSenc(data)
-        nowTime = data['nextRunTime']
-        data['nextRunTime'] = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()+int(interval)))
-        timer = threading.Timer(interval, self.TaskFunc,(data,))
-        timer.start()
-        self.taskList.append(data)
+        #检测是否超出最大设定时间,并作出相关的处理
+        if data['needCheck'] == 'T':
+            interval = self.GetNextTaskSenc(data)
+            if interval >= self.maxSetTime:
+                timer = threading.Timer(self.maxSetTime, self.TaskFunc,(data,))
+                timer.start()
+                return True
+            else:
+                self.taskList.remove(data)
+                data['needCheck'] = 'F'
+                self.taskList.append(data)
+                if data['type'] == 'once':
+                    timer = threading.Timer(interval, self.TaskFunc,(data,True))
+                else:
+                    timer = threading.Timer(interval, self.TaskFunc,(data,))
+                timer.start()
+                return True
+        nowTime = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
+        if not delete :
+            self.taskList.remove(data)
+            interval = self.GetNextTaskSenc(data)
+            data['nextRunTime'] = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()+int(interval)))
+            if interval >= self.maxSetTime:
+                data['needCheck'] = 'T'
+                interval = self.maxSetTime
+            else:
+                data['needCheck'] = 'F'
+            timer = threading.Timer(interval, self.TaskFunc,(data,))
+            timer.start()
+            self.taskList.append(data)
+        else:
+            self.DeleteTask(data['taskID'])
         logname = 'lib/tasklog/'+data['creatTime'].replace(':','_')+'.log'
         with open(logname,'a') as f:
             f.write('-'*20+'\n'+nowTime+':\n')
@@ -67,6 +92,11 @@ class taskset():
     def CreatTask(self,data,writeToSql=True):
         interval = self.GetNextTaskSenc(data)
         data['nextRunTime'] = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()+int(interval)))
+        if interval >= self.maxSetTime:
+            data['needCheck'] = 'T'
+            interval = self.maxSetTime
+        else:
+            data['needCheck'] = 'F'
         self.taskList.append(data)
         if writeToSql:
             sql.insertTask(data)
@@ -81,6 +111,8 @@ class taskset():
                     t = '每周%s的%s:%s:%s' %(data['week'],data['hour'],data['mint'],data['senc'])
                 elif data['type'] == 'senc':
                     t = '每间隔%s秒' %data['senc']
+                elif data['type'] == 'once':
+                    t = '%s年%s月%s日,%s时%s分%s秒' %(data['year'],data['month'],data['day'],data['hour'],data['mint'],data['senc'])
                 f.write('计划任务执行日志\n任务创建时间:%s\n计划类型:%s\nSHELL内容:%s\n'%(data['creatTime'],t,data['value']))
         timer = threading.Timer(interval, self.TaskFunc,(data,))
         timer.start()
@@ -118,6 +150,18 @@ class taskset():
             while True:
                 next_time = now_time + datetime.timedelta(days=tip)
                 if str(next_time.day) == str(data['day']):
+                    break
+                else:
+                    tip+=1
+            next_time = now_time + datetime.timedelta(days=tip)
+        elif data['type'] == 'once' :
+            if str(data['day']) not in list(str(i) for i in range(1,32)):
+                raise ValueError('日期设定错误,日期数值应在1-31内!')
+            now_time = datetime.datetime.now()
+            tip = 1 
+            while True:
+                next_time = now_time + datetime.timedelta(days=tip)
+                if (str(next_time.year) == str(data['year'])) and (str(next_time.month) == str(data['month'])) and (str(next_time.day) == str(data['day'])):
                     break
                 else:
                     tip+=1
