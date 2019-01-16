@@ -112,7 +112,7 @@ def CreateLinkFile():
     if sqlResult[0]:
         return json.dumps({'resultCode':0})
     else:
-        return json.dumps({'resultCode':1,'result':str(result[1])})   
+        return json.dumps({'resultCode':1,'result':str(sqlResult[1])})   
 @app.route('/linkFile/Delete',methods=['POST'])
 @cklogin()
 def DeleteLinkFile():
