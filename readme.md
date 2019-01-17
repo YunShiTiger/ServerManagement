@@ -51,6 +51,14 @@
 ## 使用说明
 ### 运行本项目需要自行pip安装`flask`,`chardet`,`datetime`, `paramiko`,`pillow`,`psutil` <br>
 ### 或在目录下 python3 -m pip -r install requirements.txt<br>
+以Ubuntu为例：
+先安装python环境<br>
+`apt install python3`<br>
+`apt install python3-pip`<br>
+然后安装依赖库<br>
+`python3 -m pip install flask paramiko pillow datetime chardet pautil `<br>
+最后进入项目运行就行了<br>
+`python3 index.py`<br>
 ### route目录下是视图函数,目前有：
 1.`file.py`,用来处理文件管理器的一些操作,<br>
 2.`echarts`,用来完成前端图表的json传值,<br>
