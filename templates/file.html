@@ -296,6 +296,7 @@
 
             };
             DownFile = function () {
+            	layer.msg('正在打包下载...');
                 document.getElementById("formPost").action = '/DownFile';
                 document.getElementById("formPost").method = 'post';
                 v = Base64.encode(event.srcElement.id);
@@ -635,6 +636,7 @@
                 document.getElementById("already").text = '已选中' + selectedList.length + '个文件,点击查看';
             };
             UploadFile = function () {
+            	uptip = layer.msg('上传中...', {icon: 16,time: 9999999});
                 fd = new FormData();
                 fd.append("nowPath", Base64.encode(nowPath));
                 fd.append("File", $("#UploadInput").get(0).files[0]);
@@ -648,6 +650,7 @@
                         resultCode = jQuery.parseJSON(data).resultCode;
                         if (resultCode == '0') {
                             GetResult(nowPath);
+                            layer.close(uptip)
                             layer.msg('上传成功');
                         } else {
                             layer.alert(jQuery.parseJSON(data).result,{title:false,skin: "layui-layer-molv",area: ["250px", "150px"],time: 10000,btn:["知道了"]});
