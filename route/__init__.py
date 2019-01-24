@@ -7,7 +7,8 @@ from .setTask import *
 from .webssh import *
 from .login import *
 from .linkButton import *
-#from .controlWin import * #windows远程功能并不默认开启,若有需要,可在这里将其导入
+from .plugins import *
+from .controlWin import *
 
 from config.config import NATPenetration
 if NATPenetration:
