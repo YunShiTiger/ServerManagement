@@ -1,0 +1,2 @@
+<script>confirmInstall = parent.layer.alert('该应用未安装,确认安装??', {skin: 'layui-layer-molv',closeBtn: 1,anim: 0,btn: ['确定', '取消'],icon: 0,yes: function () {location.href='/plugins/install/{{name}}';parent.layer.close(confirmInstall);}, btn2: function () {parent.layer.msg('您未安装...');parent.layer.close(confirmInstall);}});</script>
+ 
